@@ -12,6 +12,16 @@ class CarroPage extends StatelessWidget {
    return Scaffold(
      appBar: AppBar(
        title: Text(car.nome),
+       actions: <Widget>[
+       IconButton(
+         icon: Icon(Icons.place),
+         onPressed: _onClickMapa,
+   ),
+         IconButton(
+           icon: Icon(Icons.videocam),
+           onPressed: _onClickVideo,
+         ),
+       ],
      ),
      body: _body()
    );
@@ -24,4 +34,10 @@ class CarroPage extends StatelessWidget {
     );
   }
 
+
+  void _onClickMapa() {
+  }
+
+  void _onClickVideo() {
+  }
 }
