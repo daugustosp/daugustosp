@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bytebank/pages/carro/lori.dart';
 import 'package:bytebank/pages/carro/loripsum.dart';
 import 'package:http/http.dart' as http;
 import 'package:bytebank/pages/carro/simpleBloc.dart';

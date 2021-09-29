@@ -18,43 +18,42 @@ class CarroPage extends StatefulWidget {
 class _CarroPageState extends State<CarroPage> {
   final _loripsumApiBloc = LoripsumBloc();
 
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _loripsumApiBloc.fetch();
   }
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-     appBar: AppBar(
-       title: Text(widget.car.nome),
-       actions: <Widget>[
-       IconButton(
-         icon: Icon(Icons.place),
-         onPressed: _onClickMapa,
-   ),
-         IconButton(
-           icon: Icon(Icons.videocam),
-           onPressed: _onClickVideo,
-         ),
-         PopupMenuButton<String>(
-           onSelected: (String value) => _onClickPopupMenu(value),
-          itemBuilder: (BuildContext context){
-           return [
-             PopupMenuItem(value: "Editar", child: Text("Editar"),),
-             PopupMenuItem(value: "Deletar", child: Text("Deletar"),),
-             PopupMenuItem(value: "Share", child: Text("Share"),)
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.car.nome),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.place),
+              onPressed: _onClickMapa,
+            ),
+            IconButton(
+              icon: Icon(Icons.videocam),
+              onPressed: _onClickVideo,
+            ),
+            PopupMenuButton<String>(
+              onSelected: (String value) => _onClickPopupMenu(value),
+              itemBuilder: (BuildContext context){
+                return [
+                  PopupMenuItem(value: "Editar", child: Text("Editar"),),
+                  PopupMenuItem(value: "Deletar", child: Text("Deletar"),),
+                  PopupMenuItem(value: "Share", child: Text("Share"),)
 
-           ];
-         },
-         )
-       ],
-     ),
-     body: _body()
-   );
+                ];
+              },
+            )
+          ],
+        ),
+        body: _body()
+    );
   }
 
   _body() {
@@ -76,30 +75,30 @@ class _CarroPageState extends State<CarroPage> {
 
   Row _bloco1() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  text(widget.car.nome, fontSize: 20, bold: true),
-                  text(widget.car.tipo,fontSize: 16),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            text(widget.car.nome, fontSize: 20, bold: true),
+            text(widget.car.tipo,fontSize: 16),
 
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
-                    onPressed: _onClickFavorito,
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.share, size: 40,),
-                    onPressed: _onClickShare,
-                  )
-                ],
-              )
-            ],
-          );
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
+              onPressed: _onClickFavorito,
+            ),
+            IconButton(
+              icon: Icon(Icons.share, size: 40,),
+              onPressed: _onClickShare,
+            )
+          ],
+        )
+      ],
+    );
   }
 
   _bloco2() {
@@ -133,12 +132,12 @@ class _CarroPageState extends State<CarroPage> {
       case "Editar":
         print("Editar !!!");
         break;
-        case "Deletar":
-            print("Deletar !!!");
-          break;
-          case "Share":
-          print("DShare !!!");
-            break;
+      case "Deletar":
+        print("Deletar !!!");
+        break;
+      case "Share":
+        print("DShare !!!");
+        break;
     }
   }
 

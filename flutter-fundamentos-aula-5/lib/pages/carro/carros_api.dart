@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:bytebank/favoritos/carro_dao.dart';
 import 'package:bytebank/pages/carro/carro.dart';
 import 'package:bytebank/pages/login/Usuario.dart';
 import 'package:http/http.dart' as http;
@@ -29,6 +30,10 @@ static Future<List<carro>> getCarros(String tipo) async{
   var response = await http.get(url, headers: headers);
   String json = response.body;
   print(json);
+ final dao = CarroDAO();
+
+
+
   try {
     List list = convert.json.decode(json);
 

@@ -13,55 +13,13 @@ import 'carro.dart';
 import 'carros_api.dart';
 import 'carros_model.dart';
 
-class CarrosListView extends StatefulWidget{
-  String tipo;
-  CarrosListView(this.tipo);
+class CarrosListView extends StatelessWidget {
+ List<carro> carros;
 
-  @override
-  _CarrosListViewState createState() => _CarrosListViewState();
-}
-
-class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAliveClientMixin<CarrosListView> {
-  List<carro> carros;
-
-  final _model = CarrosModel();
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-    _model.fetch(widget.tipo);
-
-  }
-
+ CarrosListView(this.carros);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-   return Observer(
-        builder: (_){
-          List<carro> carros = _model.carros;
-
-          if(_model.error != null){
-           return TextError("Não foi possivel buscar os carros");
-            }
-
-          if (carros == null){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-            }
-
-
-          return _listView(carros);
-          },
-   );
-  }
-
-  Container _listView(List<carro> carros) {
     return Container(
       padding: EdgeInsets.all(16),
       child: ListView.builder(
@@ -99,7 +57,7 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                       children: <Widget>[
                         FlatButton(
                           child: const Text('DETALHES'),
-                          onPressed: () => _onClickCarro(c),
+                          onPressed: () => _onClickCarro(context, c),
                         ),
                         FlatButton(
                           child: const Text('SHARE'),
@@ -117,7 +75,7 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
     );
   }
 
-  _onClickCarro(carro c) {
+  _onClickCarro(context, carro c) {
     push(context, CarroPage(c));
   }
 
