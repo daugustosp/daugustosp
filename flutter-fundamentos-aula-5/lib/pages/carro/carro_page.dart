@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 
 class CarroPage extends StatefulWidget {
-  carro car;
+  Carro car;
 
   CarroPage(this.car);
 

@@ -1,47 +1,45 @@
 
-import 'dart:convert';
-
-import 'package:bytebank/favoritos/carro_dao.dart';
-import 'package:bytebank/pages/carro/carro.dart';
-import 'package:bytebank/pages/login/Usuario.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-class TipoCarro{
+import 'package:bytebank/favoritos/carro_dao.dart';
+import 'package:bytebank/pages/login/Usuario.dart';
+import 'package:http/http.dart' as http;
+
+import 'carro.dart';
+
+class TipoCarro {
   static final String classicos = "classicos";
   static final String esportivos = "esportivos";
   static final String luxo = "luxo";
-
 }
 
 class CarrosApi {
+  static Future<List<Carro>> getCarros(String tipo) async {
 
-static Future<List<carro>> getCarros(String tipo) async{
+    Usuario user = await Usuario.get();
 
- Usuario user = await Usuario.get();
+    Map<String,String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${user.token}"
+    };
 
- Map<String, String> headers = {
-   "Content-Type": "application/json",
-   "Authorization": "Bearer ${user.token}"
- };
+    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/tipo/$tipo';
 
-  var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/tipo/$tipo';
-   print(url);
-  var response = await http.get(url, headers: headers);
-  String json = response.body;
-  print(json);
- final dao = CarroDAO();
+    print("GET > $url");
 
+    var response = await http.get(url, headers: headers);
 
+    String json = response.body;
 
-  try {
     List list = convert.json.decode(json);
 
-    return list.map<carro>((map) => carro.fromJson(map)).toList();
-  } catch(error, exception){
-    print("$error > $exception");
-    throw error;
-  }
+    List<Carro> carros = list.map<Carro>((map) => Carro.fromMap(map)).toList();
 
-}
+    final dao = CarroDAO();
+
+    // Salvar todos os carros
+    carros.forEach(dao.save);
+
+    return carros;
+  }
 }

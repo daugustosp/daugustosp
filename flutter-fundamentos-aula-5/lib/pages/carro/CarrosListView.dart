@@ -11,10 +11,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'carro.dart';
 import 'carros_api.dart';
-import 'carros_model.dart';
 
 class CarrosListView extends StatelessWidget {
- List<carro> carros;
+ List<Carro> carros;
 
  CarrosListView(this.carros);
 
@@ -25,7 +24,7 @@ class CarrosListView extends StatelessWidget {
       child: ListView.builder(
         itemCount: carros != null ? carros.length : 0,
         itemBuilder: (contex, index){
-          carro c= carros[index];
+          Carro c= carros[index];
 
           return Card(
             color: Colors.grey[100],
@@ -75,7 +74,7 @@ class CarrosListView extends StatelessWidget {
     );
   }
 
-  _onClickCarro(context, carro c) {
+  _onClickCarro(context, Carro c) {
     push(context, CarroPage(c));
   }
 

@@ -1,4 +1,7 @@
-class carro {
+import 'package:bytebank/favoritos/entity.dart';
+
+
+class Carro extends Entity {
   int id;
   String nome;
   String tipo;
@@ -8,7 +11,7 @@ class carro {
   String latitude;
   String longitude;
 
-  carro(
+  Carro(
       {this.id,
         this.nome,
         this.tipo,
@@ -18,18 +21,19 @@ class carro {
         this.latitude,
         this.longitude});
 
-  carro.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    nome = json['nome'];
-    tipo = json['tipo'];
-    descricao = json['descricao'];
-    urlFoto = json['urlFoto'];
-    urlVideo = json['urlVideo'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
+  Carro.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    nome = map['nome'];
+    tipo = map['tipo'];
+    descricao = map['descricao'];
+    urlFoto = map['urlFoto'];
+    urlVideo = map['urlVideo'];
+    latitude = map['latitude'];
+    longitude = map['longitude'];
   }
 
-  Map<String, dynamic> toJson() {
+  @override
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['nome'] = this.nome;
@@ -41,4 +45,10 @@ class carro {
     data['longitude'] = this.longitude;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'Carro{id: $id, nome: $nome}';
+  }
+
 }

@@ -11,7 +11,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'carro.dart';
 import 'carros_api.dart';
 import 'carros_bloc.dart';
-import 'carros_model.dart';
+
 
 class CarrosPage extends StatefulWidget {
   String tipo;
@@ -24,7 +24,7 @@ class CarrosPage extends StatefulWidget {
 
 class _CarrosPageState extends State<CarrosPage>
     with AutomaticKeepAliveClientMixin<CarrosPage> {
-  List<carro> carros;
+  List<Carro> carros;
 
   final _bloc = CarrosBloc();
 
@@ -55,7 +55,7 @@ class _CarrosPageState extends State<CarrosPage>
           );
         }
 
-        List<carro> carros = snapshot.data;
+        List<Carro> carros = snapshot.data;
 
         return RefreshIndicator(
           onRefresh: _onRefresh,
