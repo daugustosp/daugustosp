@@ -1,6 +1,7 @@
 import 'package:bytebank/pages/carro/carro.dart';
 import 'package:bytebank/pages/carro/loripsum_api.dart';
 import 'package:bytebank/pages/utils/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -61,8 +62,9 @@ class _CarroPageState extends State<CarroPage> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
-            Image.network(widget.car.urlFoto),
+          children: <Widget>[
+            CachedNetworkImage(
+                imageUrl:  widget.car.urlFoto),
             _bloco1(),
             Divider(),
             _bloco2(),
