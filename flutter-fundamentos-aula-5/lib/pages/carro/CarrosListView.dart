@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:bytebank/pages/carro/carro_page.dart';
 import 'package:bytebank/pages/utils/nav.dart';
 import 'package:bytebank/pages/utils/teste_erro.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,7 +35,8 @@ class CarrosListView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
-                    child: Image.network(
+                    child: CachedNetworkImage(
+                      imageUrl:
                       c.urlFoto ?? "https://s3-sa-east-1.amazonaws.com/videos.livetouchdev.com.br/classicos/Chevrolet_Corvette.png",
                       width: 250,
                     ),
