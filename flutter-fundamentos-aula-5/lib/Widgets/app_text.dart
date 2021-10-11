@@ -43,7 +43,7 @@ class AppText extends StatelessWidget {
       style: TextStyle(color: Colors.blue),
       decoration: InputDecoration(
               border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16)
+            borderRadius: BorderRadius.circular(12)
         ),
           labelText: label,
           labelStyle: TextStyle(fontSize: 25, color: Colors.grey),

@@ -1,11 +1,11 @@
 
 import 'package:bytebank/pages/carro/home_page.dart';
+import 'package:bytebank/pages/utils/sql/db_helper.dart';
 import 'package:bytebank/pages/login/Usuario.dart';
 import 'package:bytebank/pages/login/login_page.dart';
 import 'package:bytebank/pages/utils/nav.dart';
 import 'package:flutter/material.dart';
 
-import 'favoritos/db_helper.dart';
 
 class SplashPage extends StatefulWidget {
   @override

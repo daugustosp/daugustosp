@@ -1,7 +1,9 @@
 
 import 'dart:convert' as convert;
 
-import 'package:bytebank/favoritos/carro_dao.dart';
+import 'package:bytebank/pages/api_response.dart';
+import 'package:bytebank/pages/carro/carro_dao.dart';
+import 'package:bytebank/pages/favoritos/favorito_service.dart';
 import 'package:bytebank/pages/login/Usuario.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,11 +16,80 @@ class TipoCarro {
 }
 
 class CarrosApi {
-  static Future<List<Carro>> getCarros(String tipo) async {
 
+  static Future<ApiResponse<bool>> deletar(Carro c) async{
+    //buscou o usuario logado no aplicativo
+    Usuario user = await Usuario.get();
+    int id = c.id;
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${user.token}"
+    };
+
+    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/$id';
+
+    print("DELETE > $url");
+
+    var response = await http.delete(url, headers: headers);
+     print('Response Status : ${response.statusCode}');
+
+    if(response.statusCode == 200){
+      Map mapResponse = convert.json.decode(response.body);
+      Carro carro = Carro.fromMap(mapResponse);
+
+      print("Carro deletado com sucesso: ${carro.id} ");
+      print('Response body : ${response.body}');
+      final daocarro = CarroDAO();
+       daocarro.delete(carro.id);
+       FavoritoService.deletarFavorito(carro.id);
+
+      return ApiResponse.ok(true);
+    }
+    Map mapResponse = convert.json.decode(response.body);
+    return ApiResponse.error(mapResponse["error"]);
+  }
+
+
+  static Future<ApiResponse<bool>> save(Carro c) async{
+
+    //buscou o usuario logado no aplicativo
     Usuario user = await Usuario.get();
 
-    Map<String,String> headers = {
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${user.token}"
+
+
+    };
+
+    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/';
+
+    print("POST > $url");
+
+    String json = c.toJson();
+
+    var response = await http.post(url, body: json, headers: headers);
+
+    print('Response Status : ${response.statusCode}');
+    print('Response body : ${response.body}');
+
+    if(response.statusCode == 201 || response.statusCode == 200){
+      Map mapResponse = convert.json.decode(response.body);
+      Carro carro = Carro.fromMap(mapResponse);
+
+      print("Novo Carro: ${carro.id} ");
+
+      return ApiResponse.ok(true);
+    }
+    Map mapResponse = convert.json.decode(response.body);
+    return ApiResponse.error(mapResponse["error"]);
+
+  }
+
+  static Future<List<Carro>> getCarros(String tipo) async {
+    Usuario user = await Usuario.get();
+
+    Map<String, String> headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer ${user.token}"
     };

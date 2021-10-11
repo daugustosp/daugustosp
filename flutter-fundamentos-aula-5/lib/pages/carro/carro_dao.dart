@@ -1,9 +1,11 @@
 
 
 // Data Access Object
+
+
 import 'package:bytebank/pages/carro/carro.dart';
 
-import 'base_dao.dart';
+import '../utils/sql/base_dao.dart';
 
 class CarroDAO extends BaseDAO<Carro> {
 
@@ -15,11 +17,8 @@ class CarroDAO extends BaseDAO<Carro> {
     return Carro.fromMap(map);
   }
 
-  Future<List<Carro>> findAllByTipo(String tipo) async {
-    final dbClient = await db;
+  Future<List<Carro>> findAllByTipo(String tipo)  {
+     return query('select * from carro where tipo =? ',[tipo]);
 
-    final list = await dbClient.rawQuery('select * from carro where tipo =? ',[tipo]);
-
-    return list.map<Carro>((json) => fromMap(json)).toList();
   }
 }

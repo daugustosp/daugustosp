@@ -1,9 +1,18 @@
 import 'package:bytebank/pages/carro/carro.dart';
 import 'package:bytebank/pages/carro/loripsum_api.dart';
+import 'package:bytebank/pages/favoritos/favorito_service.dart';
+import 'package:bytebank/pages/utils/alert.dart';
+import 'package:bytebank/pages/utils/nav.dart';
 import 'package:bytebank/pages/utils/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+
+import '../api_response.dart';
+import 'carro_form_page.dart';
+import 'carros_api.dart';
 
 
 
@@ -18,13 +27,23 @@ class CarroPage extends StatefulWidget {
 
 class _CarroPageState extends State<CarroPage> {
   final _loripsumApiBloc = LoripsumBloc();
+   Color Colores = Colors.grey;
+
+  Carro get carro => widget.car;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loripsumApiBloc.fetch();
+
+    FavoritoService.isFavorito(carro).then((bool favorito) {
+      setState(() {
+        Colores = favorito ? Colors.red : Colors.grey;
+      });
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +95,7 @@ class _CarroPageState extends State<CarroPage> {
   }
 
   Row _bloco1() {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -90,9 +110,10 @@ class _CarroPageState extends State<CarroPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
-              onPressed: _onClickFavorito,
+              icon: Icon(Icons.favorite, color: Colores, size: 40,),
+                 onPressed: _onClickFavorito,
             ),
+
             IconButton(
               icon: Icon(Icons.share, size: 40,),
               onPressed: _onClickShare,
@@ -133,9 +154,10 @@ class _CarroPageState extends State<CarroPage> {
     switch(value){
       case "Editar":
         print("Editar !!!");
+        push(context, CarroFormPage(carro: carro));
         break;
       case "Deletar":
-        print("Deletar !!!");
+        _deletar();
         break;
       case "Share":
         print("DShare !!!");
@@ -143,7 +165,14 @@ class _CarroPageState extends State<CarroPage> {
     }
   }
 
-  void _onClickFavorito() {
+  void _onClickFavorito() async {
+
+    bool favorito = await FavoritoService.favoritar(carro);
+
+    setState(() {
+      Colores = favorito ? Colors.red : Colors.grey;
+    });
+
   }
 
   void _onClickShare() {
@@ -154,5 +183,18 @@ class _CarroPageState extends State<CarroPage> {
     // TODO: implement dispose
     super.dispose();
     _loripsumApiBloc.dispose();
+  }
+
+  Future<void> _deletar() async {
+
+    ApiResponse<bool> response = await CarrosApi.deletar(carro);
+    if(response.ok){
+      alert(context, "Carro deletado com sucesso", callback: (){
+        Navigator.pop(context);
+      });
+    }else {
+      alert(context, response.msg);
+    }
+
   }
 }

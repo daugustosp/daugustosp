@@ -1,8 +1,8 @@
 
 import 'dart:async';
 
-import 'package:bytebank/favoritos/carro_dao.dart';
 import 'package:bytebank/pages/carro/simpleBloc.dart';
+import 'package:bytebank/pages/carro/carro_dao.dart';
 import 'package:bytebank/pages/utils/network.dart';
 
 import 'carro.dart';
@@ -23,10 +23,10 @@ class CarrosBloc extends SimpleBloc<List<Carro>>{
 
       final dao = CarroDAO();
 
-      if(carros.isEmpty) {
+
         // Salvar todos os carros
         carros.forEach(dao.save);
-      }
+
       add(carros);
 
       return carros;
