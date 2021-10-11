@@ -1,7 +1,7 @@
 
 import 'dart:convert' as convert;
 
-import 'package:bytebank/favoritos/carro_dao.dart';
+import 'package:bytebank/pages/api_response.dart';
 import 'package:bytebank/pages/login/Usuario.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,11 +14,13 @@ class TipoCarro {
 }
 
 class CarrosApi {
-  static Future<List<Carro>> getCarros(String tipo) async {
 
+
+
+  static Future<List<Carro>> getCarros(String tipo) async {
     Usuario user = await Usuario.get();
 
-    Map<String,String> headers = {
+    Map<String, String> headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer ${user.token}"
     };

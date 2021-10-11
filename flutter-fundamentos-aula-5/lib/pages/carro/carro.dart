@@ -1,5 +1,7 @@
-import 'package:bytebank/favoritos/entity.dart';
 
+
+
+import 'package:bytebank/pages/utils/sql/entity.dart';
 
 class Carro extends Entity {
   int id;
