@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:bytebank/pages/carro/carro_page.dart';
 import 'package:bytebank/pages/utils/nav.dart';
 import 'package:bytebank/pages/utils/teste_erro.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -11,63 +12,20 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'carro.dart';
 import 'carros_api.dart';
-import 'carros_model.dart';
 
-class CarrosListView extends StatefulWidget{
-  String tipo;
-  CarrosListView(this.tipo);
+class CarrosListView extends StatelessWidget {
+ List<Carro> carros;
 
-  @override
-  _CarrosListViewState createState() => _CarrosListViewState();
-}
-
-class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAliveClientMixin<CarrosListView> {
-  List<carro> carros;
-
-  final _model = CarrosModel();
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-    _model.fetch(widget.tipo);
-
-  }
-
+ CarrosListView(this.carros);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-   return Observer(
-        builder: (_){
-          List<carro> carros = _model.carros;
-
-          if(_model.error != null){
-           return TextError("Não foi possivel buscar os carros");
-            }
-
-          if (carros == null){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-            }
-
-
-          return _listView(carros);
-          },
-   );
-  }
-
-  Container _listView(List<carro> carros) {
     return Container(
       padding: EdgeInsets.all(16),
       child: ListView.builder(
         itemCount: carros != null ? carros.length : 0,
         itemBuilder: (contex, index){
-          carro c= carros[index];
+          Carro c= carros[index];
 
           return Card(
             color: Colors.grey[100],
@@ -77,7 +35,8 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
-                    child: Image.network(
+                    child: CachedNetworkImage(
+                      imageUrl:
                       c.urlFoto ?? "https://s3-sa-east-1.amazonaws.com/videos.livetouchdev.com.br/classicos/Chevrolet_Corvette.png",
                       width: 250,
                     ),
@@ -99,7 +58,7 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
                       children: <Widget>[
                         FlatButton(
                           child: const Text('DETALHES'),
-                          onPressed: () => _onClickCarro(c),
+                          onPressed: () => _onClickCarro(context, c),
                         ),
                         FlatButton(
                           child: const Text('SHARE'),
@@ -117,7 +76,7 @@ class _CarrosListViewState extends State<CarrosListView> with AutomaticKeepAlive
     );
   }
 
-  _onClickCarro(carro c) {
+  _onClickCarro(context, Carro c) {
     push(context, CarroPage(c));
   }
 

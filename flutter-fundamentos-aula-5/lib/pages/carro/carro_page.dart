@@ -1,13 +1,23 @@
 import 'package:bytebank/pages/carro/carro.dart';
 import 'package:bytebank/pages/carro/loripsum_api.dart';
+import 'package:bytebank/pages/favoritos/favorito_service.dart';
+import 'package:bytebank/pages/utils/alert.dart';
+import 'package:bytebank/pages/utils/nav.dart';
 import 'package:bytebank/pages/utils/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+
+import '../api_response.dart';
+import 'carro_form_page.dart';
+import 'carros_api.dart';
 
 
 
 class CarroPage extends StatefulWidget {
-  carro car;
+  Carro car;
 
   CarroPage(this.car);
 
@@ -17,44 +27,53 @@ class CarroPage extends StatefulWidget {
 
 class _CarroPageState extends State<CarroPage> {
   final _loripsumApiBloc = LoripsumBloc();
+   Color Colores = Colors.grey;
 
- @override
+  Carro get carro => widget.car;
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _loripsumApiBloc.fetch();
+
+    FavoritoService.isFavorito(carro).then((bool favorito) {
+      setState(() {
+        Colores = favorito ? Colors.red : Colors.grey;
+      });
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-     appBar: AppBar(
-       title: Text(widget.car.nome),
-       actions: <Widget>[
-       IconButton(
-         icon: Icon(Icons.place),
-         onPressed: _onClickMapa,
-   ),
-         IconButton(
-           icon: Icon(Icons.videocam),
-           onPressed: _onClickVideo,
-         ),
-         PopupMenuButton<String>(
-           onSelected: (String value) => _onClickPopupMenu(value),
-          itemBuilder: (BuildContext context){
-           return [
-             PopupMenuItem(value: "Editar", child: Text("Editar"),),
-             PopupMenuItem(value: "Deletar", child: Text("Deletar"),),
-             PopupMenuItem(value: "Share", child: Text("Share"),)
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.car.nome),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.place),
+              onPressed: _onClickMapa,
+            ),
+            IconButton(
+              icon: Icon(Icons.videocam),
+              onPressed: _onClickVideo,
+            ),
+            PopupMenuButton<String>(
+              onSelected: (String value) => _onClickPopupMenu(value),
+              itemBuilder: (BuildContext context){
+                return [
+                  PopupMenuItem(value: "Editar", child: Text("Editar"),),
+                  PopupMenuItem(value: "Deletar", child: Text("Deletar"),),
+                  PopupMenuItem(value: "Share", child: Text("Share"),)
 
-           ];
-         },
-         )
-       ],
-     ),
-     body: _body()
-   );
+                ];
+              },
+            )
+          ],
+        ),
+        body: _body()
+    );
   }
 
   _body() {
@@ -62,8 +81,9 @@ class _CarroPageState extends State<CarroPage> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
-            Image.network(widget.car.urlFoto),
+          children: <Widget>[
+            CachedNetworkImage(
+                imageUrl:  widget.car.urlFoto),
             _bloco1(),
             Divider(),
             _bloco2(),
@@ -75,31 +95,33 @@ class _CarroPageState extends State<CarroPage> {
   }
 
   Row _bloco1() {
-    return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  text(widget.car.nome, fontSize: 20, bold: true),
-                  text(widget.car.tipo,fontSize: 16),
 
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
-                    onPressed: _onClickFavorito,
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.share, size: 40,),
-                    onPressed: _onClickShare,
-                  )
-                ],
-              )
-            ],
-          );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            text(widget.car.nome, fontSize: 20, bold: true),
+            text(widget.car.tipo,fontSize: 16),
+
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.favorite, color: Colores, size: 40,),
+                 onPressed: _onClickFavorito,
+            ),
+
+            IconButton(
+              icon: Icon(Icons.share, size: 40,),
+              onPressed: _onClickShare,
+            )
+          ],
+        )
+      ],
+    );
   }
 
   _bloco2() {
@@ -132,17 +154,25 @@ class _CarroPageState extends State<CarroPage> {
     switch(value){
       case "Editar":
         print("Editar !!!");
+        push(context, CarroFormPage(carro: carro));
         break;
-        case "Deletar":
-            print("Deletar !!!");
-          break;
-          case "Share":
-          print("DShare !!!");
-            break;
+      case "Deletar":
+        _deletar();
+        break;
+      case "Share":
+        print("DShare !!!");
+        break;
     }
   }
 
-  void _onClickFavorito() {
+  void _onClickFavorito() async {
+
+    bool favorito = await FavoritoService.favoritar(carro);
+
+    setState(() {
+      Colores = favorito ? Colors.red : Colors.grey;
+    });
+
   }
 
   void _onClickShare() {
@@ -153,5 +183,18 @@ class _CarroPageState extends State<CarroPage> {
     // TODO: implement dispose
     super.dispose();
     _loripsumApiBloc.dispose();
+  }
+
+  Future<void> _deletar() async {
+
+    ApiResponse<bool> response = await CarrosApi.deletar(carro);
+    if(response.ok){
+      alert(context, "Carro deletado com sucesso", callback: (){
+        Navigator.pop(context);
+      });
+    }else {
+      alert(context, response.msg);
+    }
+
   }
 }

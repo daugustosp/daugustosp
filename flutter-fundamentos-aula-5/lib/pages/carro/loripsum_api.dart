@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bytebank/pages/carro/lori.dart';
 import 'package:bytebank/pages/carro/loripsum.dart';
 import 'package:http/http.dart' as http;
 import 'package:bytebank/pages/carro/simpleBloc.dart';
@@ -22,7 +23,8 @@ class LoripsumApi {
   static Future<String> getLoripsum() async {
 
 
-    var url = 'https://loripsum.net/api';
+    var url = Uri.parse('https://loripsum.net/api');
+
 
     print("GET > $url");
 
