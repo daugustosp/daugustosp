@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:bytebank/Widgets/app_button.dart';
 import 'package:bytebank/Widgets/app_text.dart';
@@ -9,7 +10,7 @@ import 'package:bytebank/pages/utils/nav.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:image_picker/image_picker.dart';
 import 'carro.dart';
 
 class CarroFormPage extends StatefulWidget {
@@ -27,10 +28,13 @@ class _CarroFormPageState extends State<CarroFormPage> {
   final tNome = TextEditingController();
   final tDesc = TextEditingController();
   final tTipo = TextEditingController();
-
+  final picker = ImagePicker();
+   File _file;
   int _radioIndex = 0;
 
   var _showProgress = false;
+
+
 
   Carro get carro => widget.carro;
 
@@ -119,14 +123,19 @@ class _CarroFormPageState extends State<CarroFormPage> {
   }
 
   _headerFoto() {
-    return carro != null
-        ? CachedNetworkImage(
-            imageUrl: carro.urlFoto,
-          )
-        : Image.asset(
-            "assets/images/camera.png",
-            height: 150,
-          );
+    return InkWell(
+      onTap: _onClickFoto,
+      child: _file != null
+        ? Image.file(_file)
+          : carro != null
+          ? CachedNetworkImage(
+        imageUrl: carro.urlFoto,
+      )
+          : Image.asset(
+        "assets/images/camera.png",
+        height: 150,
+      ),
+    );
   }
 
   _radioTipo() {
@@ -212,7 +221,7 @@ class _CarroFormPageState extends State<CarroFormPage> {
 
     print("Salvar o carro $c");
 
-    ApiResponse<bool> response = await CarrosApi.save(c);
+    ApiResponse<bool> response = await CarrosApi.save(c, _file);
     if(response.ok){
       alert(context, "Carro salvo com sucesso", callback: (){
         push(context, HomePage());
@@ -229,4 +238,14 @@ class _CarroFormPageState extends State<CarroFormPage> {
 
     print("Fim.");
   }
+
+  void _onClickFoto() async {
+    final PickedFile image =  await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      this._file = File(image.path);
+    });
+
+  }
+
 }

@@ -23,7 +23,8 @@ class LoripsumApi {
   static Future<String> getLoripsum() async {
 
 
-    var url = 'https://loripsum.net/api';
+    var url = Uri.parse('https://loripsum.net/api');
+
 
     print("GET > $url");
 

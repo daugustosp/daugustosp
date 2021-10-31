@@ -1,8 +1,10 @@
 
 import 'dart:convert' as convert;
+import 'dart:html';
 
 import 'package:bytebank/pages/api_response.dart';
 import 'package:bytebank/pages/carro/carro_dao.dart';
+import 'package:bytebank/pages/carro/upload_service.dart';
 import 'package:bytebank/pages/favoritos/favorito_service.dart';
 import 'package:bytebank/pages/login/Usuario.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +28,7 @@ class CarrosApi {
       "Authorization": "Bearer ${user.token}"
     };
 
-    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/$id';
+    var url = Uri.parse('https://carros-springboot.herokuapp.com/api/v2/carros/$id');
 
     print("DELETE > $url");
 
@@ -37,12 +39,11 @@ class CarrosApi {
       Map mapResponse = convert.json.decode(response.body);
       Carro carro = Carro.fromMap(mapResponse);
 
-      print("Carro deletado com sucesso: ${carro.id} ");
+      print("Carro deletado com sucesso: ${c.id} ");
       print('Response body : ${response.body}');
       final daocarro = CarroDAO();
        daocarro.delete(carro.id);
-       FavoritoService.deletarFavorito(carro.id);
-
+       FavoritoService.favoritar(c);
       return ApiResponse.ok(true);
     }
     Map mapResponse = convert.json.decode(response.body);
@@ -50,7 +51,12 @@ class CarrosApi {
   }
 
 
-  static Future<ApiResponse<bool>> save(Carro c) async{
+  static Future<ApiResponse<bool>> save(Carro c, File file) async{
+      try{
+        if(file != null){
+          ApiResponse<String> response = await UploadService.upload(file);
+        }
+      }
 
     //buscou o usuario logado no aplicativo
     Usuario user = await Usuario.get();
@@ -62,7 +68,7 @@ class CarrosApi {
 
     };
 
-    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/';
+    var url = Uri.parse('https://carros-springboot.herokuapp.com/api/v2/carros/');
 
     print("POST > $url");
 
@@ -94,7 +100,7 @@ class CarrosApi {
       "Authorization": "Bearer ${user.token}"
     };
 
-    var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/tipo/$tipo';
+    var url = Uri.parse('https://carros-springboot.herokuapp.com/api/v2/carros/tipo/$tipo');
 
     print("GET > $url");
 

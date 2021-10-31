@@ -27,14 +27,6 @@ class FavoritoService {
 
   }
 
-  static Future<bool> deletarFavorito(int id) async{
-
-    final dao = FavoritoDAO();
-
-    dao.delete(id);
-    print("favorito deletado: $id");
-    return true;
-  }
 
   static Future<List<Carro>> getCarros() async {
     //select * from carro c,favorito f where c.id = f.id
