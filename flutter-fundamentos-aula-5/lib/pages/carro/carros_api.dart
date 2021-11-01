@@ -1,6 +1,6 @@
 
 import 'dart:convert' as convert;
-import 'dart:html';
+import 'dart:io';
 
 import 'package:bytebank/pages/api_response.dart';
 import 'package:bytebank/pages/carro/carro_dao.dart';
@@ -52,11 +52,11 @@ class CarrosApi {
 
 
   static Future<ApiResponse<bool>> save(Carro c, File file) async{
-      try{
+
         if(file != null){
-          ApiResponse<String> response = await UploadService.upload(file);
+        final response = await UploadService.upload(file);
         }
-      }
+
 
     //buscou o usuario logado no aplicativo
     Usuario user = await Usuario.get();
