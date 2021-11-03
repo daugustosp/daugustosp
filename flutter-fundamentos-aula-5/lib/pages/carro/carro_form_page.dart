@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:bytebank/Widgets/app_button.dart';
 import 'package:bytebank/Widgets/app_text.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'carro.dart';
+import 'package:path/path.dart' as path;
 
 class CarroFormPage extends StatefulWidget {
   final Carro carro;
@@ -33,6 +36,9 @@ class _CarroFormPageState extends State<CarroFormPage> {
   int _radioIndex = 0;
 
   var _showProgress = false;
+
+  Uint8List _cam;
+
 
 
 
@@ -131,10 +137,12 @@ class _CarroFormPageState extends State<CarroFormPage> {
           ? CachedNetworkImage(
         imageUrl: carro.urlFoto,
       )
+
           : Image.asset(
         "assets/images/camera.png",
         height: 150,
       ),
+
     );
   }
 
@@ -211,7 +219,7 @@ class _CarroFormPageState extends State<CarroFormPage> {
     c.nome = tNome.text;
     c.descricao = tDesc.text;
     c.tipo = _getTipo();
-    c.urlFoto = "https://s3-sa-east-1.amazonaws.com/videos.livetouchdev.com.br/classicos/Cadillac_Eldorado.png";
+    c.urlFoto = "https://storage.googleapis.com/carros-flutterweb.appspot.com/" + path.basename(_file.path);
 
     print("Carro: $c");
 
@@ -244,6 +252,9 @@ class _CarroFormPageState extends State<CarroFormPage> {
 
     setState(() {
       this._file = File(image.path);
+
+      print("aqui >> $_cam");
+
     });
 
   }
