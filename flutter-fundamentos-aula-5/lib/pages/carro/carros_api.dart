@@ -84,6 +84,7 @@ class CarrosApi {
       Carro carro = Carro.fromMap(mapResponse);
 
       print("Novo Carro: ${carro.id} ");
+      print("Novo Carro: ${carro.urlFoto} ");
 
       return ApiResponse.ok(true);
     }
